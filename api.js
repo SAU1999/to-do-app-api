@@ -4,9 +4,11 @@ const fs = require("fs");
 const apiRouter = express.Router();
 
 
-function Task(taskName,isDone){
+function Task(id,taskName,isDone){
+    this.id = id;
     this.taskName = taskName;
     this.isDone = isDone;
+
 }
 
 
@@ -45,11 +47,13 @@ apiRouter.post("/add/task",(req,res)=> {
 
     data = fs.readFileSync("storage.json","utf8");
     data = data.toString();
-
+    
+    id = Math.floor(Math.random()*100000000)
     tasks = JSON.parse(data);
-    task = new Task(req.body.taskName,false);
+    task = new Task(id,req.body.taskName,false);
     tasks.push(task);
-
+    
+    
 
     fs.writeFile("storage.json",JSON.stringify(tasks),(err,data) => {
         if(err) {
@@ -60,7 +64,8 @@ apiRouter.post("/add/task",(req,res)=> {
         
         else {
             res.json({
-                response : "created successfully"
+                response : "created successfully",
+                task_id : id
             });
         }
     })
@@ -76,8 +81,10 @@ apiRouter.delete("/delete/task/:id",(req,res) => {
 
     tasks = JSON.parse(data);
     
-    if(id >= 0 && id < tasks.length){
-        tasks.splice(id,1);
+    aInd = tasks.findIndex(x => x.id === id);
+    
+    if(aInd >= 0){
+        tasks.splice(aInd,1);
 
         fs.writeFile("storage.json",JSON.stringify(tasks),(err,data) => {
             if(err) {
@@ -109,13 +116,23 @@ apiRouter.delete("/delete/task/:id",(req,res) => {
 apiRouter.put("/update/task/:id",(req,res) => {
     id = Number(req.params.id);
     data = fs.readFileSync("storage.json","utf8");
-    data = data.toString();
+    //data = data.toString();
 
     tasks = JSON.parse(data);
+    aInd = tasks.findIndex(x => x.id === id);
 
-    if(id >= 0 && id < tasks.length){
-        tasks[id].taskName = req.body.taskName;
-        tasks[id].isDone = req.body.isDone;
+    if(aInd >= 0){
+        
+        /*if(req.body.isDone === "true")
+            tasks[aInd].isDone = true;
+
+        else    
+            tasks[aInd].isDone = false;*/
+
+        tasks[aInd].isDone = !tasks[aInd].isDone
+
+        console.log(tasks[aInd]);
+        
 
         fs.writeFile("storage.json",JSON.stringify(tasks),(err,data) => {
             if(err) {
@@ -127,7 +144,7 @@ apiRouter.put("/update/task/:id",(req,res) => {
             else {
                 res.json({
                     status : "updated successfully",
-                    task : tasks[id]
+                    task : tasks[aInd]
                 });
             }
         })

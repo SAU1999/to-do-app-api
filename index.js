@@ -4,6 +4,8 @@ const path = require("path");
 const fs = require("fs");
 var {check} = require("express-validator");
 
+const cors = require('cors');
+
 const apiRouter = require("./api");
 
 
@@ -14,6 +16,7 @@ app.set("views",path.join(__dirname,path.join("views")));
 
 
 //Body Parser Middleware
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
 
@@ -28,6 +31,6 @@ app.use(express.static(path.join(__dirname,"Public")));
 
 
 
-app.listen(3000,() => console.log("Server Started at Port 3000"));
+app.listen(3001,() => console.log("Server Started at Port 3000"));
 
 
