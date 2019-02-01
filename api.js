@@ -13,7 +13,13 @@ function Task(id,taskName,isDone){
 
 
 apiRouter.get("/",(req,res) => {
-    fs.readFile("storage.json","utf8",(error,data) => {
+    console.log("hi");
+    fs.readFile(`${__dirname}/storage.json`,"utf8",(error,data) => {
+
+        if(error){
+            console.log(error);
+            return;
+        }
         tasks = JSON.parse(data);
         
         res.json(tasks);        

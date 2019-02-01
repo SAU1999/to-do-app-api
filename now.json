@@ -1,0 +1,25 @@
+{
+    "version": 2,
+    "name": "express-toDoApi",
+    "builds": [
+        {
+            "src": "index.js",
+            "use": "@now/node-server"
+        },
+        {
+            "src": "api.js",
+            "use": "@now/node-server"
+        },
+
+        {
+            "src": "storage.json",
+            "use": "@now/static"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "index.js"
+        }
+    ]
+}
